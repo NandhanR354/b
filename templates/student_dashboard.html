@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - GAME RURAL INDIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-graduate text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        Welcome, {{ user.firstname }} {{ user.lastname }}! 🎉
+                    </h1>
+                    <p class="text-xl text-gray-600">Grade {{ user.grade }} • {{ user.school_name }}</p>
+                    <p class="text-gray-500">{{ user.district }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-trophy text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">1,250</h3>
+                        <p class="text-gray-600">Total Points</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-medal text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">12</h3>
+                        <p class="text-gray-600">Achievements</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-fire text-purple-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">7</h3>
+                        <p class="text-gray-600">Day Streak</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">85%</h3>
+                        <p class="text-gray-600">Avg Score</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grade Selection -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Choose Your Learning Path</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {% for grade in range(6, 13) %}
+                <a href="/student/grade/{{ grade }}" 
+                   class="group p-6 border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition-all duration-200 card-hover {% if user.grade == grade %}bg-indigo-50 border-indigo-500{% endif %}">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">{{ grade }}</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">
+                            Grade {{ grade }}
+                        </h3>
+                        {% if user.grade == grade %}
+                        <span class="inline-block mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded-full">
+                            Your Grade
+                        </span>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Progress Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Weekly Progress</h2>
+                <canvas id="progressChart" width="400" height="200"></canvas>
+            </div>
+            
+            <!-- Recent Achievements -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Achievements</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-4 bg-yellow-50 rounded-lg">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-star text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Math Master</h3>
+                            <p class="text-gray-600 text-sm">Completed 10 algebra problems</p>
+                            <p class="text-yellow-600 text-sm">+50 points</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 p-4 bg-green-50 rounded-lg">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lightning-bolt text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Speed Learner</h3>
+                            <p class="text-gray-600 text-sm">Completed lesson in record time</p>
+                            <p class="text-green-600 text-sm">+25 points</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-fire text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">Streak Champion</h3>
+                            <p class="text-gray-600 text-sm">7-day learning streak</p>
+                            <p class="text-purple-600 text-sm">+100 points</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="/leaderboard" class="flex items-center p-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200">
+                    <i class="fas fa-trophy text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="font-semibold">View Leaderboard</h3>
+                        <p class="text-sm opacity-90">See how you rank</p>
+                    </div>
+                </a>
+                
+                <a href="/practice" class="flex items-center p-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200">
+                    <i class="fas fa-dumbbell text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="font-semibold">Practice Mode</h3>
+                        <p class="text-sm opacity-90">Improve your skills</p>
+                    </div>
+                </a>
+                
+                <a href="/profile" class="flex items-center p-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200">
+                    <i class="fas fa-user text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="font-semibold">My Profile</h3>
+                        <p class="text-sm opacity-90">Update settings</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Progress Chart
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Points Earned',
+                data: [65, 78, 90, 81, 56, 85, 95],
+                borderColor: 'rgb(79, 70, 229)',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

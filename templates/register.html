@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block title %}Register - GAME RURAL INDIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Complete Your Registration</h1>
+            <p class="text-xl text-gray-600">Tell us a bit about yourself to get started</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg">
+            <!-- Role Selection -->
+            <div class="p-6 border-b">
+                <div class="flex justify-center space-x-4">
+                    <button id="student-tab" class="px-6 py-3 rounded-lg font-semibold transition-colors duration-200 bg-indigo-600 text-white">
+                        <i class="fas fa-user-graduate mr-2"></i>Student
+                    </button>
+                    <button id="teacher-tab" class="px-6 py-3 rounded-lg font-semibold transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>Teacher
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Student Registration Form -->
+            <div id="student-form" class="p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Student Registration</h2>
+                <form id="student-registration-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input type="text" name="firstname" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                            <input type="text" name="lastname" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Grade *</label>
+                            <select name="grade" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select Grade</option>
+                                {% for grade in range(6, 13) %}
+                                <option value="{{ grade }}">Grade {{ grade }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth *</label>
+                            <input type="date" name="dob" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">UDISE Code *</label>
+                            <input type="text" name="udise_code" id="student-udise" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                   placeholder="Enter UDISE code">
+                            <div id="student-udise-suggestions" class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">School Name</label>
+                            <input type="text" name="school_name" id="student-school" readonly 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">District</label>
+                            <input type="text" name="district" id="student-district" readonly 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">State *</label>
+                            <select name="state" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select State</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Karnataka">Karnataka</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Medium of Instruction *</label>
+                            <select name="medium" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select Medium</option>
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Odia">Odia</option>
+                                <option value="Tamil">Tamil</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
+                            <span id="student-btn-text">Complete Registration</span>
+                            <i class="fas fa-spinner fa-spin loading" id="student-loading"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Teacher Registration Form -->
+            <div id="teacher-form" class="p-6 hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Teacher Registration</h2>
+                <form id="teacher-registration-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input type="text" name="firstname" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                            <input type="text" name="lastname" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Qualification *</label>
+                            <select name="qualification" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select Qualification</option>
+                                <option value="B.Ed">B.Ed</option>
+                                <option value="M.Ed">M.Ed</option>
+                                <option value="B.A">B.A</option>
+                                <option value="M.A">M.A</option>
+                                <option value="B.Sc">B.Sc</option>
+                                <option value="M.Sc">M.Sc</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth *</label>
+                            <input type="date" name="dob" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Teaching Grade *</label>
+                            <select name="grade" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select Grade</option>
+                                {% for grade in range(6, 13) %}
+                                <option value="{{ grade }}">Grade {{ grade }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">UDISE Code *</label>
+                            <input type="text" name="udise_code" id="teacher-udise" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                   placeholder="Enter UDISE code">
+                            <div id="teacher-udise-suggestions" class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">School Name</label>
+                            <input type="text" name="school_name" id="teacher-school" readonly 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">District</label>
+                            <input type="text" name="district" id="teacher-district" readonly 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">State *</label>
+                            <select name="state" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select State</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Karnataka">Karnataka</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Medium of Teaching *</label>
+                            <select name="medium" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select Medium</option>
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Odia">Odia</option>
+                                <option value="Tamil">Tamil</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
+                            <span id="teacher-btn-text">Complete Registration</span>
+                            <i class="fas fa-spinner fa-spin loading" id="teacher-loading"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const studentTab = document.getElementById('student-tab');
+    const teacherTab = document.getElementById('teacher-tab');
+    const studentForm = document.getElementById('student-form');
+    const teacherForm = document.getElementById('teacher-form');
+    
+    // Tab switching
+    studentTab.addEventListener('click', function() {
+        studentTab.classList.add('bg-indigo-600', 'text-white');
+        studentTab.classList.remove('bg-gray-200', 'text-gray-700');
+        teacherTab.classList.add('bg-gray-200', 'text-gray-700');
+        teacherTab.classList.remove('bg-indigo-600', 'text-white');
+        studentForm.classList.remove('hidden');
+        teacherForm.classList.add('hidden');
+    });
+    
+    teacherTab.addEventListener('click', function() {
+        teacherTab.classList.add('bg-indigo-600', 'text-white');
+        teacherTab.classList.remove('bg-gray-200', 'text-gray-700');
+        studentTab.classList.add('bg-gray-200', 'text-gray-700');
+        studentTab.classList.remove('bg-indigo-600', 'text-white');
+        teacherForm.classList.remove('hidden');
+        studentForm.classList.add('hidden');
+    });
+    
+    // UDISE autocomplete functionality
+    function setupUdiseAutocomplete(inputId, suggestionId, schoolId, districtId) {
+        const input = document.getElementById(inputId);
+        const suggestions = document.getElementById(suggestionId);
+        const schoolInput = document.getElementById(schoolId);
+        const districtInput = document.getElementById(districtId);
+        
+        input.addEventListener('input', async function() {
+            const query = this.value;
+            if (query.length < 3) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/udise/?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                if (data.length > 0) {
+                    suggestions.innerHTML = '';
+                    data.forEach(school => {
+                        const div = document.createElement('div');
+                        div.className = 'p-3 hover:bg-gray-100 cursor-pointer border-b';
+                        div.innerHTML = `
+                            <div class="font-semibold">${school.udise_code}</div>
+                            <div class="text-sm text-gray-600">${school.school_name}</div>
+                            <div class="text-xs text-gray-500">${school.district}, ${school.block}</div>
+                        `;
+                        div.addEventListener('click', function() {
+                            input.value = school.udise_code;
+                            schoolInput.value = school.school_name;
+                            districtInput.value = school.district;
+                            suggestions.classList.add('hidden');
+                        });
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.classList.remove('hidden');
+                } else {
+                    suggestions.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error fetching UDISE data:', error);
+                suggestions.classList.add('hidden');
+            }
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.add('hidden');
+            }
+        });
+    }
+    
+    setupUdiseAutocomplete('student-udise', 'student-udise-suggestions', 'student-school', 'student-district');
+    setupUdiseAutocomplete('teacher-udise', 'teacher-udise-suggestions', 'teacher-school', 'teacher-district');
+    
+    // Form submissions
+    document.getElementById('student-registration-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        const loading = document.getElementById('student-loading');
+        const btnText = document.getElementById('student-btn-text');
+        
+        loading.classList.add('active');
+        btnText.textContent = 'Registering...';
+        
+        try {
+            const response = await fetch('/api/register/student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                window.location.href = result.redirect_url;
+            } else {
+                alert(result.error || 'Registration failed');
+            }
+        } catch (error) {
+            alert('Network error. Please try again.');
+        }
+        
+        loading.classList.remove('active');
+        btnText.textContent = 'Complete Registration';
+    });
+    
+    document.getElementById('teacher-registration-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        const loading = document.getElementById('teacher-loading');
+        const btnText = document.getElementById('teacher-btn-text');
+        
+        loading.classList.add('active');
+        btnText.textContent = 'Registering...';
+        
+        try {
+            const response = await fetch('/api/register/teacher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                window.location.href = result.redirect_url;
+            } else {
+                alert(result.error || 'Registration failed');
+            }
+        } catch (error) {
+            alert('Network error. Please try again.');
+        }
+        
+        loading.classList.remove('active');
+        btnText.textContent = 'Complete Registration';
+    });
+});
+</script>
+{% endblock %}

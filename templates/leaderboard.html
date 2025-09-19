@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard - GAME RURAL INDIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">
+                    🏆 Leaderboard
+                </h1>
+                <p class="text-xl text-gray-600">See how you rank among students across India</p>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Filter Results</h2>
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">School</label>
+                    <input type="text" name="school" value="{{ filters.school }}" 
+                           placeholder="Enter school name"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Grade</label>
+                    <select name="grade" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <option value="">All Grades</option>
+                        {% for grade in range(6, 13) %}
+                        <option value="{{ grade }}" {% if filters.grade == grade|string %}selected{% endif %}>
+                            Grade {{ grade }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">UDISE Code</label>
+                    <input type="text" name="udise_code" value="{{ filters.udise_code }}" 
+                           placeholder="Enter UDISE code"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">District</label>
+                    <input type="text" name="district" value="{{ filters.district }}" 
+                           placeholder="Enter district"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                
+                <div class="md:col-span-4 flex justify-end space-x-4">
+                    <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a href="/leaderboard" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300">
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Top 3 Students -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {% for i in range(3) %}
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center {% if i == 0 %}border-4 border-yellow-400{% elif i == 1 %}border-4 border-gray-400{% else %}border-4 border-orange-400{% endif %}">
+                <div class="w-20 h-20 mx-auto mb-4 {% if i == 0 %}bg-yellow-100{% elif i == 1 %}bg-gray-100{% else %}bg-orange-100{% endif %} rounded-full flex items-center justify-center">
+                    <i class="fas fa-{% if i == 0 %}crown{% elif i == 1 %}medal{% else %}award{% endif %} text-3xl {% if i == 0 %}text-yellow-600{% elif i == 1 %}text-gray-600{% else %}text-orange-600{% endif %}"></i>
+                </div>
+                <div class="text-2xl font-bold {% if i == 0 %}text-yellow-600{% elif i == 1 %}text-gray-600{% else %}text-orange-600{% endif %} mb-2">
+                    #{{ i + 1 }}
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Rahul Kumar</h3>
+                <p class="text-gray-600 text-sm mb-2">Grade 10 • KOSALA HIGH SCHOOL</p>
+                <p class="text-gray-500 text-sm mb-3">ANGUL District</p>
+                <div class="text-2xl font-bold text-indigo-600">{{ [2450, 2380, 2320][i] }} pts</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Leaderboard Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Full Rankings</h2>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Overall</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">This Week</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">This Month</button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subjects</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% if leaderboard_data %}
+                            {% for student in leaderboard_data %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        {% if loop.index <= 3 %}
+                                        <i class="fas fa-{% if loop.index == 1 %}crown text-yellow-500{% elif loop.index == 2 %}medal text-gray-500{% else %}award text-orange-500{% endif %} mr-2"></i>
+                                        {% endif %}
+                                        <span class="font-semibold text-gray-900">{{ loop.index }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                            <span class="font-semibold text-indigo-600">{{ student.firstname[0] }}{{ student.lastname[0] }}</span>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">{{ student.firstname }} {{ student.lastname }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                        Grade {{ student.grade }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ student.school_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ student.district }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-indigo-600">{{ student.total_marks or 0 }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button class="text-indigo-600 hover:text-indigo-900 text-sm">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Sample data when no real data is available -->
+                            {% set sample_students = [
+                                ('Rahul', 'Kumar', 10, 'KOSALA HIGH SCHOOL', 'ANGUL', 2450),
+                                ('Priya', 'Patel', 9, 'BURDAGUDA NPS', 'MALKANGIRI', 2380),
+                                ('Amit', 'Singh', 11, 'KHANTAPARA HIGH SCHOOL', 'BALASORE', 2320),
+                                ('Sneha', 'Reddy', 8, 'ARABATI PS', 'MALKANGIRI', 2280),
+                                ('Ravi', 'Sharma', 12, 'PANCHAGARH BIJAY KUMAR HS', 'ANGUL', 2250)
+                            ] %}
+                            {% for student in sample_students %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        {% if loop.index <= 3 %}
+                                        <i class="fas fa-{% if loop.index == 1 %}crown text-yellow-500{% elif loop.index == 2 %}medal text-gray-500{% else %}award text-orange-500{% endif %} mr-2"></i>
+                                        {% endif %}
+                                        <span class="font-semibold text-gray-900">{{ loop.index }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                            <span class="font-semibold text-indigo-600">{{ student[0][0] }}{{ student[1][0] }}</span>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">{{ student[0] }} {{ student[1] }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                        Grade {{ student[2] }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ student[3] }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ student[4] }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-indigo-600">{{ student[5] }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button class="text-indigo-600 hover:text-indigo-900 text-sm">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

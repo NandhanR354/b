@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- Hero Section -->
+    <div class="gradient-bg py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+                Welcome to <span class="text-yellow-300">GAME RURAL INDIA</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-white mb-12 max-w-3xl mx-auto">
+                Empowering rural students (Grades 6-12) with personalized, gamified learning experiences
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button id="student-btn" class="btn-primary text-white px-8 py-4 rounded-lg text-lg font-semibold">
+                    <i class="fas fa-user-graduate mr-2"></i>
+                    I'm a Student
+                </button>
+                <button id="teacher-btn" class="btn-primary text-white px-8 py-4 rounded-lg text-lg font-semibold">
+                    <i class="fas fa-chalkboard-teacher mr-2"></i>
+                    I'm a Teacher
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    Why Choose GAME RURAL INDIA?
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our platform combines cutting-edge technology with proven educational methods to deliver personalized learning experiences.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-wifi text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Offline Learning</h3>
+                    <p class="text-gray-600">
+                        Continue learning even without internet connectivity. All content is cached for offline access.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-robot text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">AI-Powered Personalization</h3>
+                    <p class="text-gray-600">
+                        Advanced AI algorithms adapt to your learning style and provide personalized recommendations.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-gamepad text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Gamified Experience</h3>
+                    <p class="text-gray-600">
+                        Earn points, unlock achievements, and compete with peers in a fun learning environment.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-language text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Multi-Language Support</h3>
+                    <p class="text-gray-600">
+                        Learn in your preferred language - English, Hindi, Tamil, or Odia.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Leaderboards</h3>
+                    <p class="text-gray-600">
+                        Track your progress and compete with students from across your district and state.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Progress Tracking</h3>
+                    <p class="text-gray-600">
+                        Monitor your learning journey with detailed analytics and progress reports.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Authentication Modal -->
+<div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Login / Sign Up</h2>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="email-step">
+                    <form id="email-form">
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Address
+                            </label>
+                            <input type="email" id="email" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
+                            <span id="email-btn-text">Send OTP</span>
+                            <i class="fas fa-spinner fa-spin loading" id="email-loading"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="otp-step" class="hidden">
+                    <form id="otp-form">
+                        <div class="mb-4">
+                            <label for="otp" class="block text-sm font-medium text-gray-700 mb-2">
+                                Enter OTP sent to your email
+                            </label>
+                            <input type="text" id="otp" required maxlength="6" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">
+                            <span id="otp-btn-text">Verify OTP</span>
+                            <i class="fas fa-spinner fa-spin loading" id="otp-loading"></i>
+                        </button>
+                        <button type="button" id="back-to-email" class="w-full mt-2 text-indigo-600 hover:text-indigo-500">
+                            Back to Email
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const authModal = document.getElementById('auth-modal');
+    const studentBtn = document.getElementById('student-btn');
+    const teacherBtn = document.getElementById('teacher-btn');
+    const closeModal = document.getElementById('close-modal');
+    const emailStep = document.getElementById('email-step');
+    const otpStep = document.getElementById('otp-step');
+    const emailForm = document.getElementById('email-form');
+    const otpForm = document.getElementById('otp-form');
+    const backToEmail = document.getElementById('back-to-email');
+    
+    let selectedRole = 'student';
+    
+    // Open modal
+    function openModal(role) {
+        selectedRole = role;
+        authModal.classList.remove('hidden');
+        resetModal();
+    }
+    
+    function resetModal() {
+        emailStep.classList.remove('hidden');
+        otpStep.classList.add('hidden');
+        emailForm.reset();
+        otpForm.reset();
+    }
+    
+    studentBtn.addEventListener('click', () => openModal('student'));
+    teacherBtn.addEventListener('click', () => openModal('teacher'));
+    closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
+    
+    // Email form submission
+    emailForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const emailLoading = document.getElementById('email-loading');
+        const emailBtnText = document.getElementById('email-btn-text');
+        
+        emailLoading.classList.add('active');
+        emailBtnText.textContent = 'Sending...';
+        
+        try {
+            const response = await fetch('/api/otp/request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                emailStep.classList.add('hidden');
+                otpStep.classList.remove('hidden');
+            } else {
+                alert(data.error || 'Failed to send OTP');
+            }
+        } catch (error) {
+            alert('Network error. Please try again.');
+        }
+        
+        emailLoading.classList.remove('active');
+        emailBtnText.textContent = 'Send OTP';
+    });
+    
+    // OTP form submission
+    otpForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const otp = document.getElementById('otp').value;
+        const otpLoading = document.getElementById('otp-loading');
+        const otpBtnText = document.getElementById('otp-btn-text');
+        
+        otpLoading.classList.add('active');
+        otpBtnText.textContent = 'Verifying...';
+        
+        try {
+            const response = await fetch('/api/otp/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email, otp: otp })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert(data.error || 'Invalid OTP');
+            }
+        } catch (error) {
+            alert('Network error. Please try again.');
+        }
+        
+        otpLoading.classList.remove('active');
+        otpBtnText.textContent = 'Verify OTP';
+    });
+    
+    backToEmail.addEventListener('click', function() {
+        emailStep.classList.remove('hidden');
+        otpStep.classList.add('hidden');
+    });
+    
+    // Close modal on outside click
+    authModal.addEventListener('click', function(e) {
+        if (e.target === authModal) {
+            authModal.classList.add('hidden');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Grade {{ grade }} - GAME RURAL INDIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Grade {{ grade }} Learning Hub</h1>
+                    <p class="text-xl text-gray-600 mt-2">Choose a subject to start learning</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-indigo-600">{{ grade }}</div>
+                    <div class="text-gray-500">Grade Level</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Subjects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="subjects-grid">
+            <!-- Subjects will be loaded dynamically -->
+        </div>
+        
+        <!-- Learning Activities -->
+        <div class="bg-white rounded-xl shadow-lg p-6" id="activities-section">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Recommended Activities</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="activities-grid">
+                <!-- Activities will be loaded dynamically -->
+            </div>
+        </div>
+        
+        <!-- AI Recommendations -->
+        <div class="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center mb-4">
+                <i class="fas fa-robot text-3xl mr-4"></i>
+                <div>
+                    <h2 class="text-2xl font-bold">AI Recommendations</h2>
+                    <p class="opacity-90">Personalized learning suggestions just for you</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">📊 Strengthen Math Skills</h3>
+                    <p class="text-sm opacity-90">Focus on algebraic expressions based on your recent performance</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">🔬 Explore Science</h3>
+                    <p class="text-sm opacity-90">Try chemistry experiments to complement your physics knowledge</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">📚 Reading Practice</h3>
+                    <p class="text-sm opacity-90">Improve comprehension with grade-appropriate passages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Modal -->
+<div id="activity-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Activity</h2>
+                    <button id="close-activity-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="modal-content">
+                    <!-- Activity content will be loaded here -->
+                </div>
+                
+                <div class="mt-6 flex justify-between">
+                    <button id="prev-activity" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                        <i class="fas fa-arrow-left mr-2"></i>Previous
+                    </button>
+                    <button id="next-activity" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                        Next<i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const grade = {{ grade }};
+    let currentContent = null;
+    let activityLogs = [];
+    
+    // Load grade content
+    loadGradeContent();
+    
+    async function loadGradeContent() {
+        try {
+            const response = await fetch(`/api/grades/${grade}/content`);
+            const data = await response.json();
+            currentContent = data;
+            
+            renderSubjects(data.subjects);
+            renderActivities(data.activities);
+        } catch (error) {
+            console.error('Error loading content:', error);
+            showOfflineContent();
+        }
+    }
+    
+    function renderSubjects(subjects) {
+        const grid = document.getElementById('subjects-grid');
+        grid.innerHTML = '';
+        
+        subjects.forEach(subject => {
+            const subjectCard = document.createElement('div');
+            subjectCard.className = 'bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer';
+            subjectCard.innerHTML = `
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl" 
+                         style="background-color: ${subject.color}20; color: ${subject.color}">
+                        ${subject.icon}
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-bold text-gray-900">${subject.name}</h3>
+                        <p class="text-gray-600">Grade ${grade} Level</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between text-sm text-gray-500 mb-2">
+                        <span>Progress</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full" style="background-color: ${subject.color}; width: 75%"></div>
+                    </div>
+                </div>
+                <button class="mt-4 w-full py-2 rounded-lg font-semibold transition-colors duration-200" 
+                        style="background-color: ${subject.color}; color: white"
+                        onclick="openSubject('${subject.name}')">
+                    Start Learning
+                </button>
+            `;
+            grid.appendChild(subjectCard);
+        });
+    }
+    
+    function renderActivities(activities) {
+        const grid = document.getElementById('activities-grid');
+        grid.innerHTML = '';
+        
+        activities.forEach((activity, index) => {
+            const activityCard = document.createElement('div');
+            activityCard.className = 'bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200 cursor-pointer';
+            activityCard.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-gray-900">${activity.title}</h3>
+                    <span class="px-2 py-1 bg-${activity.difficulty === 'Easy' ? 'green' : activity.difficulty === 'Medium' ? 'yellow' : 'red'}-100 text-${activity.difficulty === 'Easy' ? 'green' : activity.difficulty === 'Medium' ? 'yellow' : 'red'}-700 text-xs rounded-full">
+                        ${activity.difficulty}
+                    </span>
+                </div>
+                <p class="text-gray-600 text-sm mb-3">${activity.subject}</p>
+                <button class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                    Start Activity →
+                </button>
+            `;
+            
+            activityCard.addEventListener('click', () => openActivity(activity, index));
+            grid.appendChild(activityCard);
+        });
+    }
+    
+    function openSubject(subjectName) {
+        // Implement subject-specific learning interface
+        alert(`Opening ${subjectName} learning module...`);
+    }
+    
+    function openActivity(activity, index) {
+        const modal = document.getElementById('activity-modal');
+        const title = document.getElementById('modal-title');
+        const content = document.getElementById('modal-content');
+        
+        title.textContent = activity.title;
+        content.innerHTML = `
+            <div class="text-center py-8">
+                <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-play text-indigo-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">${activity.title}</h3>
+                <p class="text-gray-600 mb-4">Subject: ${activity.subject}</p>
+                <p class="text-gray-600 mb-6">Difficulty: ${activity.difficulty}</p>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <p class="text-yellow-800">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        This is a demo activity. In the full version, interactive content would be loaded here.
+                    </p>
+                </div>
+                
+                <button class="btn-primary text-white px-6 py-3 rounded-lg font-semibold" 
+                        onclick="startActivity('${activity.id}')">
+                    Start Activity
+                </button>
+            </div>
+        `;
+        
+        modal.classList.remove('hidden');
+        
+        // Log activity view
+        logActivity(activity.id, 'view', true, 0);
+    }
+    
+    function startActivity(activityId) {
+        // Simulate activity interaction
+        const startTime = Date.now();
+        
+        // Mock activity completion after 3 seconds
+        setTimeout(() => {
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            const isCorrect = Math.random() > 0.3; // 70% success rate
+            
+            logActivity(activityId, 'complete', isCorrect, timeSpent);
+            showActivityResult(isCorrect, timeSpent);
+        }, 3000);
+        
+        // Show loading state
+        const content = document.getElementById('modal-content');
+        content.innerHTML = `
+            <div class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mb-4"></div>
+                <p class="text-gray-600">Activity in progress...</p>
+            </div>
+        `;
+    }
+    
+    function showActivityResult(isCorrect, timeSpent) {
+        const content = document.getElementById('modal-content');
+        const points = isCorrect ? 10 : 5;
+        
+        content.innerHTML = `
+            <div class="text-center py-8">
+                <div class="w-24 h-24 bg-${isCorrect ? 'green' : 'yellow'}-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-${isCorrect ? 'check' : 'star'} text-${isCorrect ? 'green' : 'yellow'}-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">
+                    ${isCorrect ? 'Great Job!' : 'Good Effort!'}
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    ${isCorrect ? 'You completed the activity successfully!' : 'Keep practicing to improve!'}
+                </p>
+                <div class="bg-indigo-50 rounded-lg p-4 mb-6">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold">Points Earned:</span>
+                        <span class="text-indigo-600 font-bold">+${points}</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="font-semibold">Time Taken:</span>
+                        <span class="text-gray-600">${timeSpent} seconds</span>
+                    </div>
+                </div>
+                <button class="btn-primary text-white px-6 py-3 rounded-lg font-semibold" 
+                        onclick="closeActivityModal()">
+                    Continue Learning
+                </button>
+            </div>
+        `;
+    }
+    
+    function logActivity(activityId, action, isCorrect, timeSpent) {
+        const log = {
+            activity_id: activityId,
+            skill_id: `skill_${activityId}`,
+            correct: isCorrect,
+            time_spent_sec: timeSpent,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Store offline if needed
+        activityLogs.push(log);
+        
+        // Try to sync online
+        if (navigator.onLine) {
+            syncLogs();
+        }
+    }
+    
+    async function syncLogs() {
+        if (activityLogs.length === 0) return;
+        
+        try {
+            const response = await fetch('/api/logs/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ logs: activityLogs })
+            });
+            
+            if (response.ok) {
+                console.log('Logs synced successfully');
+                activityLogs = []; // Clear synced logs
+            }
+        } catch (error) {
+            console.error('Error syncing logs:', error);
+        }
+    }
+    
+    function closeActivityModal() {
+        document.getElementById('activity-modal').classList.add('hidden');
+    }
+    
+    function showOfflineContent() {
+        // Show cached content when offline
+        const grid = document.getElementById('subjects-grid');
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-wifi text-gray-400 text-6xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">You're Offline</h3>
+                <p class="text-gray-600">Some content may be limited. Connect to internet for the full experience.</p>
+            </div>
+        `;
+    }
+    
+    // Modal event listeners
+    document.getElementById('close-activity-modal').addEventListener('click', closeActivityModal);
+    document.getElementById('activity-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeActivityModal();
+        }
+    });
+    
+    // Sync logs when coming back online
+    window.addEventListener('online', syncLogs);
+});
+</script>
+{% endblock %}
